@@ -25,12 +25,19 @@
   "keywords": [
     "compute.io",
     "compute",
-    "computation"
+    "computation",
+    "erf",
+    "error function",
+    "math",
+    "statistics",
+    "stats"
   ],
   "bugs": {
     "url": "https://github.com/compute-io/erfcinv/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "compute-polynomial": "^1.0.0"
+  },
   "devDependencies": {
     "chai": "1.x.x",
     "mocha": "1.x.x",

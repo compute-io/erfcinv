@@ -19,14 +19,30 @@ For use in the browser, use [browserify](https://github.com/substack/node-browse
 To use the module,
 
 ``` javascript
-var lib = require( 'compute-erfcinv' );
+var erfcinv = require( 'compute-erfcinv' );
+```
+
+The method accepts a single argument: either a single `numeric` value or an `array` of numeric values. A value must reside on the interval `[0,2]`. For an input `array`, the inverse error function is evaluated for each value.
+
+``` javascript
+erfcinv( 0.5 );
+erfcinv( [ 0, 0.5, 1, 1.5, 2 ] );
 ```
 
 
 ## Examples
 
 ``` javascript
-var lib = require( 'compute-erfcinv' );
+// Simulate some data...
+var data = new Array( 100 );
+
+for ( var i = 0; i < data.length; i++ ) {
+	data[ i ] = Math.random() * 2;
+}
+
+// Evaluate the inverse complementary error function for each datum:
+console.log( erfcinv( data ) );
+// returns [...]
 ```
 
 To run the example code from the top-level application directory,
