@@ -101,6 +101,10 @@ describe( 'compute-erfcinv', function tests() {
 		assert.strictEqual( val, ninf );
 	});
 
+	it( 'should return 0 if provided 1', function test() {
+		assert.strictEqual( erfcinv( 1 ), 0 );
+	});
+
 	it( 'should return a numeric value if provided a numeric value', function test() {
 		assert.isNumber( erfcinv( 0.5 ) );
 	});
@@ -123,28 +127,28 @@ describe( 'compute-erfcinv', function tests() {
 		var values, expected, actual;
 
 		values = [
-			0.25,
-			0.6,
-			0.8,
-			0.999,
-			0.9999,
-			9.999999999999999e-1
+			1.75,
+			1.25,
+			1.01,
+			1e-5,
+			1e-100,
+			5e-324
 		];
 
 		// Evaluated on Wolfram Alpha and Octave:
 		expected = [
-			0.225312,
-			0.595116,
-			0.906194,
-			2.32675,
-			2.75106,
-			5.8636 // Octave
+			-0.8134198,
+			-0.2253121,
+			-0.00886250,
+			3.12341327,
+			15.0655747,
+			27.2130740
 		];
 
 		actual = erfcinv( values );
 
 		for ( var i = 0; i < actual.length; i++ ) {
-			assert.closeTo( actual[ i ], expected[ i ], 1e-4 );
+			assert.closeTo( actual[ i ], expected[ i ], 1e-3 );
 		}
 	});
 
