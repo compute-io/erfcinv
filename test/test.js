@@ -183,9 +183,8 @@ describe( 'compute-erfcinv', function tests() {
 		];
 
 		for ( var i = 0; i < values.length; i++ ) {
-			expect( badValue( values[i] ) ).to.throw( Error );
+			expect( badValue( values[i] ) ).to.throw( RangeError );
 		}
-
 		function badValue( value ) {
 			return function() {
 				erfcinv( value );
