@@ -16,31 +16,73 @@ For use in the browser, use [browserify](https://github.com/substack/node-browse
 
 ## Usage
 
-To use the module,
-
 ``` javascript
 var erfcinv = require( 'compute-erfcinv' );
 ```
 
-The method accepts a single argument: either a single `numeric` value or an `array` of numeric values. A value must reside on the interval `[0,2]`. For an input `array`, the inverse error function is evaluated for each value.
+#### erfcinv( x[, options] )
+
+Evaluates the [inverse complementary error function](http://en.wikipedia.org/wiki/Error_function). The function accepts as its first argument either a single `numeric` value or an `array` of numeric values. A value __must__ reside on the interval `[0,2]`. For an input `array`, the inverse complementary error function is evaluated for each value.
 
 ``` javascript
 erfcinv( 0.5 );
+// returns ~0.4769
+
 erfcinv( [ 0, 0.5, 1, 1.5, 2 ] );
+// returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
+```
+
+When provided an input `array`, the function accepts two `options`:
+
+*  __copy__: `boolean` indicating whether to return a new `array` containing the `erfcinv` values. Default: `true`.
+*  __accessor__: accessor `function` for accessing numeric values in object `arrays`.
+
+To mutate the input `array` (e.g., when input values can be discarded or when optimizing memory usage), set the `copy` option to `false`.
+
+``` javascript
+var arr = [ 0, 0.5, 1, 1.5, 2 ];
+
+var vals = erfcinv( arr, {
+	'copy': false
+});
+// returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
+
+console.log( arr === vals );
+// returns true
+```
+
+For object `arrays`, provide an accessor `function` for accessing `array` values.
+
+``` javascript
+var data = [
+	['beep', 0],
+	['boop', 0.5],
+	['bip', 1],
+	['bap', 1.5],
+	['baz', 2]
+];
+
+function getValue( d, i ) {
+	return d[ 1 ];
+}
+
+var vals = erfcinv( data, {
+	'accessor': getValue
+});
+// returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
 ```
 
 
 ## Examples
 
 ``` javascript
-// Simulate some data...
-var data = new Array( 100 );
+var erfcinv = require( 'compute-erfcinv' );
 
+var data = new Array( 100 );
 for ( var i = 0; i < data.length; i++ ) {
 	data[ i ] = Math.random() * 2;
 }
 
-// Evaluate the inverse complementary error function for each datum:
 console.log( erfcinv( data ) );
 // returns [...]
 ```
@@ -56,7 +98,7 @@ $ node ./examples/index.js
 
 ### Unit
 
-Unit tests use the [Mocha](http://visionmedia.github.io/mocha) test framework with [Chai](http://chaijs.com) assertions. To run the tests, execute the following command in the top-level application directory:
+Unit tests use the [Mocha](http://mochajs.org) test framework with [Chai](http://chaijs.com) assertions. To run the tests, execute the following command in the top-level application directory:
 
 ``` bash
 $ make test
@@ -76,19 +118,19 @@ $ make test-cov
 Istanbul creates a `./reports/coverage` directory. To access an HTML version of the report,
 
 ``` bash
-$ open reports/coverage/lcov-report/index.html
+$ make view-cov
 ```
 
 
+---
 ## License
 
 [MIT license](http://opensource.org/licenses/MIT). 
 
 
----
 ## Copyright
 
-Copyright &copy; 2014. Athan Reines.
+Copyright &copy; 2014-2015. Athan Reines.
 
 
 [npm-image]: http://img.shields.io/npm/v/compute-erfcinv.svg

@@ -28,21 +28,35 @@
     "computation",
     "erf",
     "error function",
-    "math",
+    "erfc",
+    "complementary",
+    "error",
+    "function",
+    "erfcinv",
+    "inverse",
     "statistics",
-    "stats"
+    "stats",
+    "mathematics",
+    "math"
   ],
   "bugs": {
     "url": "https://github.com/compute-io/erfcinv/issues"
   },
   "dependencies": {
-    "compute-polynomial": "^1.0.0"
+    "compute-polynomial": "^1.1.0",
+    "compute-reverse": "^1.1.0",
+    "validate.io-array": "^1.0.3",
+    "validate.io-boolean-primitive": "^1.0.0",
+    "validate.io-function": "^1.0.2",
+    "validate.io-object": "^1.0.3"
   },
   "devDependencies": {
-    "chai": "1.x.x",
-    "mocha": "1.x.x",
+    "chai": "2.x.x",
     "coveralls": "^2.11.1",
-    "istanbul": "^0.3.0"
+    "istanbul": "^0.3.0",
+    "jshint": "2.x.x",
+    "jshint-stylish": "^1.0.0",
+    "mocha": "2.x.x"
   },
   "licenses": [
     {
