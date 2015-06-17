@@ -2,8 +2,16 @@ erfcinv
 ===
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Dependencies][dependencies-image]][dependencies-url]
 
-> Inverse complementary error function.
+> [Inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_functions).
 
+The [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_functions) is defined as
+
+<div class="equation" align="center" data-raw-text="\operatorname{erfc}^{-1}(1-z) = \operatorname{erf}^{-1}(z). " data-equation="eq:inverse_complementary_error_function">
+	<img src="" alt="Definition of the inverse complementary error function.">
+	<br>
+</div>
+
+where `erf^{-1}(z)` is the [inverse error function](https://github.com/compute-io/erfinv).
 
 ## Installation
 
@@ -22,34 +30,55 @@ var erfcinv = require( 'compute-erfcinv' );
 
 #### erfcinv( x[, options] )
 
-Evaluates the [inverse complementary error function](http://en.wikipedia.org/wiki/Error_function). The function accepts as its first argument either a single `numeric` value or an `array` of numeric values. A value __must__ reside on the interval `[0,2]`. For an input `array`, the inverse complementary error function is evaluated for each value.
+Evaluates the [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function).
+`x` may be either a [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), an [`array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays), or a [`matrix`](https://github.com/dstructs/matrix).
+All values __must__ reside on the interval `[0,2]`. For an input `array` or `matrix`, the inverse complementary error function is evaluated for each value.
 
 ``` javascript
-erfcinv( 0.5 );
+var matrix = require( 'dstructs-matrix' ),
+	data,
+	mat,
+	out,
+	i;
+
+out = erfcinv( 0.5 );
 // returns ~0.4769
 
-erfcinv( [ 0, 0.5, 1, 1.5, 2 ] );
-// returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
-```
-
-When provided an input `array`, the function accepts two `options`:
-
-*  __copy__: `boolean` indicating whether to return a new `array` containing the `erfcinv` values. Default: `true`.
-*  __accessor__: accessor `function` for accessing numeric values in object `arrays`.
-
-To mutate the input `array` (e.g., when input values can be discarded or when optimizing memory usage), set the `copy` option to `false`.
-
-``` javascript
-var arr = [ 0, 0.5, 1, 1.5, 2 ];
-
-var vals = erfcinv( arr, {
-	'copy': false
-});
+out = erfcinv( [ 0, 0.5, 1, 1.5, 2 ] );
 // returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
 
-console.log( arr === vals );
-// returns true
+data = [ 0, 1, 2 ];
+out = erf( data );
+// returns [ +infinity, 0, -infinity ]
+
+data = new Int8Array( data );
+out = erf( data );
+// returns Float64Array( [ +infinity, 0, -infinity ] )
+
+data = new Float64Array( 4 );
+for ( i = 0; i < 4; i++ ) {
+	data[ i ] = i / 2;
+}
+mat = matrix( data, [2,2], 'float64' );
+/*
+	[  0  0.5
+	   1  1.5 ]
+*/
+
+out = erf( mat );
+/*
+	[  infinity 0.477
+	   0       -0.477 ]
+*/
 ```
+
+The function accepts the following `options`:
+
+* 	__accessor__: accessor `function` for accessing `array` values.
+* 	__dtype__: output [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays) or [`matrix`](https://github.com/dstructs/matrix) data type. Default: `float64`.
+*	__copy__: `boolean` indicating if the `function` should return a new data structure. Default: `true`.
+*	__path__: [deepget](https://github.com/kgryte/utils-deep-get)/[deepset](https://github.com/kgryte/utils-deep-set) key path.
+*	__sep__: [deepget](https://github.com/kgryte/utils-deep-get)/[deepset](https://github.com/kgryte/utils-deep-set) key path separator. Default: `'.'`.
 
 For object `arrays`, provide an accessor `function` for accessing `array` values.
 
@@ -72,19 +101,166 @@ var vals = erfcinv( data, {
 // returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
 ```
 
+To [deepset](https://github.com/kgryte/utils-deep-set) an object `array`, provide a key path and, optionally, a key path separator.
+
+``` javascript
+data = [
+	{'x':[9,1.75]},
+	{'x':[9,1.25]},
+	{'x':[9,1.01]},
+	{'x':[9,1e-5]},
+	{'x':[9,1e-100]},
+	{'x':[9,5e-324]}
+];
+
+var out = erfc( data, 'x|1', '|' );
+/*
+	 [
+		{'x':[9,-0.8134198]},
+		{'x':[9,-0.2253121]},
+		{'x':[9,-0.00886250]},
+		{'x':[9,3.12341327]},
+		{'x':[9,15.0655747]},
+		{'x':[9,27.2130740]}
+	]
+*/
+
+var bool = ( data === out );
+// returns true
+```
+
+By default, when provided a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays) or [`matrix`](https://github.com/dstructs/matrix), the output data structure is `float64` in order to preserve precision. To specify a different data type, set the `dtype` option (see [`matrix`](https://github.com/dstructs/matrix) for a list of acceptable data types).
+
+``` javascript
+var data, out;
+
+data = new Float64Array( [ 1e-5, 1e-100, 5e-324 ] );
+
+out = erfcinv( data, {
+	'dtype': 'int32'
+});
+// returns Int32Array( [3,15,27] )
+
+// Works for plain arrays, as well...
+out = erfcinv( [ 1e-5, 1e-100, 5e-324 ] , {
+	'dtype': 'uint8'
+});
+// returns Uint8Array( [3,15,27] )
+```
+
+By default, the function returns a new data structure. To mutate the input data structure (e.g., when input values can be discarded or when optimizing memory usage), set the `copy` option to `false`.
+
+``` javascript
+var data,
+	bool,
+	mat,
+	out,
+	i;
+
+data = [
+	1.75,
+	1.25,
+	1.01,
+	1e-5,
+	1e-100,
+	5e-324
+];
+
+var out = erfc( data, {
+	'copy': false
+});
+// returns [ 0.813 0.225 -0.009 3.123 15.066 27.213 ]
+
+bool = (arr === vals );
+// returns true
+
+data = new Float64Array( 4 );
+for ( i = 0; i < 4; i++ ) {
+	data[ i ] = i / 2;
+}
+mat = matrix( data, [2,2], 'float64' );
+/*
+	[  0  0.5
+	   1  1.5 ]
+*/
+
+out = erfc( mat, {
+	'copy': false
+});
+/*
+	[  infinity 0.477
+	   0       -0.477 ]
+*/
+
+bool = ( mat === out );
+// returns true
+```
 
 ## Examples
 
 ``` javascript
-var erfcinv = require( 'compute-erfcinv' );
+var matrix = require( 'dstructs-matrix' ),
+	erfcinv = require( 'compute-erfcinv' );
 
-var data = new Array( 100 );
-for ( var i = 0; i < data.length; i++ ) {
+var data,
+	mat,
+	out,
+	tmp,
+	i;
+
+// Plain arrays...
+data = new Array( 100 );
+for ( i = 0; i < data.length; i++ ) {
+	data[ i ] = Math.random()*2;
+}
+out = erfcinv( data );
+
+// Object arrays (accessors)...
+function getValue( d ) {
+	return d.x;
+}
+for ( i = 0; i < data.length; i++ ) {
+	data[ i ] = {
+		'x': data[ i ]
+	};
+}
+out = erfcinv( data, {
+	'accessor': getValue
+});
+
+// Deep set arrays...
+for ( i = 0; i < data.length; i++ ) {
+	data[ i ] = {
+		'x': [ i, data[ i ].x ]
+	};
+}
+out = erfcinv( data, {
+	'path': 'x/1',
+	'sep': '/'
+});
+
+// Typed arrays...
+data = new Int32Array( 10 );
+for ( i = 0; i < data.length; i++ ) {
 	data[ i ] = Math.random() * 2;
 }
+tmp = erfcinv( data );
+out = '';
+for ( i = 0; i < data.length; i++ ) {
+	out += tmp[ i ];
+	if ( i < data.length-1 ) {
+		out += ',';
+	}
+}
 
-console.log( erfcinv( data ) );
-// returns [...]
+// Matrices...
+mat = matrix( data, [5,2], 'int32' );
+out = erfcinv( mat );
+
+// Matrices (custom output data type)...
+out = erfcinv( mat, {
+	'dtype': 'uint8'
+});
 ```
 
 To run the example code from the top-level application directory,
@@ -125,12 +301,12 @@ $ make view-cov
 ---
 ## License
 
-[MIT license](http://opensource.org/licenses/MIT). 
+[MIT license](http://opensource.org/licenses/MIT).
 
 
 ## Copyright
 
-Copyright &copy; 2014-2015. Athan Reines.
+Copyright &copy; 2014-2015. The [Compute.io](https://github.com/compute-io) Authors.
 
 
 [npm-image]: http://img.shields.io/npm/v/compute-erfcinv.svg
