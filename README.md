@@ -112,7 +112,7 @@ data = [
 	{'x':[9,5e-324]}
 ];
 
-var out = erfc( data, 'x|1', '|' );
+var out = erfcinv( data, 'x|1', '|' );
 /*
 	 [
 		{'x':[9,-0.8134198]},
