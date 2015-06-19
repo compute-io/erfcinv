@@ -24,7 +24,7 @@ describe( 'deepset erfcinv', function tests() {
 		expect( erfcinv ).to.be.a( 'function' );
 	});
 
-	it( 'should compute the error function and deep set', function test() {
+	it( 'should compute the inverse complementary error function and deep set', function test() {
 		var data, expected, i;
 
 		data = [
@@ -37,7 +37,8 @@ describe( 'deepset erfcinv', function tests() {
 		];
 
 		data = erfcinv( data, 'x' );
-		// evaluated on Wolfram Alpha
+
+		// Evaluated on Wolfram Alpha:
 		expected = [
 			{'x':-0.8134198},
 			{'x':-0.2253121},
@@ -74,7 +75,6 @@ describe( 'deepset erfcinv', function tests() {
 		for ( i = 0; i < data.length; i++ ) {
 			assert.closeTo( data[ i ].x[ 1 ], expected[ i ].x[ 1 ], 1e-3, 'custom separator' );
 		}
-
 	});
 
 	it( 'should return null if provided an empty array', function test() {

@@ -24,7 +24,7 @@ describe( 'accessor erfcinv', function tests() {
 		expect( erfcinv ).to.be.a( 'function' );
 	});
 
-	it( 'should evaluate the complementary error function using an accessor', function test() {
+	it( 'should evaluate the inverse complementary error function using an accessor', function test() {
 		var data, actual, expected, i;
 
 		data = [

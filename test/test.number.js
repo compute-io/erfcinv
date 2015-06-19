@@ -61,7 +61,6 @@ describe( 'number erfcinv', function tests() {
 	});
 
 	it( 'should evaluate the inverse complementary error function', function test() {
-
 		var values, expected;
 
 		values = [
@@ -86,7 +85,6 @@ describe( 'number erfcinv', function tests() {
 		for ( var i = 0; i < values.length; i++ ) {
 			assert.closeTo( erfcinv( values[ i ] ), expected[ i ], 1e-3 );
 		}
-
 	});
 
 	it( 'should return NaN if provided a NaN', function test() {

@@ -6,12 +6,13 @@ erfcinv
 
 The [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_functions) is defined as
 
-<div class="equation" align="center" data-raw-text="\operatorname{erfc}^{-1}(1-z) = \operatorname{erf}^{-1}(z). " data-equation="eq:inverse_complementary_error_function">
-	<img src="https://cdn.rawgit.com/compute-io/erfcinv/25e9823c2866d6f70e78501cf88954958d0ca1d5/docs/img/eqn.svg" alt="Definition of the inverse complementary error function.">
+<div class="equation" align="center" data-raw-text="\operatorname{erfc}^{-1}(1-z) = \operatorname{erf}^{-1}(z)" data-equation="eq:inverse_complementary_error_function">
+	<img src="" alt="Definition of the inverse complementary error function.">
 	<br>
 </div>
 
 where `erf^{-1}(z)` is the [inverse error function](https://github.com/compute-io/erfinv).
+
 
 ## Installation
 
@@ -30,9 +31,7 @@ var erfcinv = require( 'compute-erfcinv' );
 
 #### erfcinv( x[, options] )
 
-Evaluates the [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function).
-`x` may be either a [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), an [`array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays), or a [`matrix`](https://github.com/dstructs/matrix).
-All values __must__ reside on the interval `[0,2]`. For an input `array` or `matrix`, the inverse complementary error function is evaluated for each value.
+Evaluates the [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function). `x` may be either a [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), an [`array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays), or a [`matrix`](https://github.com/dstructs/matrix). All values __must__ reside on the interval `[0,2]`.
 
 ``` javascript
 var matrix = require( 'dstructs-matrix' ),
@@ -48,11 +47,11 @@ out = erfcinv( [ 0, 0.5, 1, 1.5, 2 ] );
 // returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
 
 data = [ 0, 1, 2 ];
-out = erf( data );
+out = erfcinv( data );
 // returns [ +infinity, 0, -infinity ]
 
 data = new Int8Array( data );
-out = erf( data );
+out = erfcinv( data );
 // returns Float64Array( [ +infinity, 0, -infinity ] )
 
 data = new Float64Array( 4 );
@@ -65,10 +64,10 @@ mat = matrix( data, [2,2], 'float64' );
 	   1  1.5 ]
 */
 
-out = erf( mat );
+out = erfcinv( mat );
 /*
-	[  infinity 0.477
-	   0       -0.477 ]
+	[  +infinity  0.477
+	   0         -0.477 ]
 */
 ```
 
@@ -80,7 +79,7 @@ The function accepts the following `options`:
 *	__path__: [deepget](https://github.com/kgryte/utils-deep-get)/[deepset](https://github.com/kgryte/utils-deep-set) key path.
 *	__sep__: [deepget](https://github.com/kgryte/utils-deep-get)/[deepset](https://github.com/kgryte/utils-deep-set) key path separator. Default: `'.'`.
 
-For object `arrays`, provide an accessor `function` for accessing `array` values.
+For non-numeric `arrays`, provide an accessor `function` for accessing `array` values.
 
 ``` javascript
 var data = [
@@ -95,7 +94,7 @@ function getValue( d, i ) {
 	return d[ 1 ];
 }
 
-var vals = erfcinv( data, {
+var out = erfcinv( data, {
 	'accessor': getValue
 });
 // returns [ +infinity, 0.4769, 0, -0.4769, -infinity ]
@@ -166,12 +165,12 @@ data = [
 	5e-324
 ];
 
-var out = erfc( data, {
+var out = erfcinv( data, {
 	'copy': false
 });
 // returns [ 0.813 0.225 -0.009 3.123 15.066 27.213 ]
 
-bool = (arr === vals );
+bool = ( data === out );
 // returns true
 
 data = new Float64Array( 4 );
@@ -184,12 +183,12 @@ mat = matrix( data, [2,2], 'float64' );
 	   1  1.5 ]
 */
 
-out = erfc( mat, {
+out = erfcinv( mat, {
 	'copy': false
 });
 /*
-	[  infinity 0.477
-	   0       -0.477 ]
+	[  +infinity  0.477
+	   0         -0.477 ]
 */
 
 bool = ( mat === out );

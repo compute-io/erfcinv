@@ -120,7 +120,6 @@ describe( 'compute-erfcinv', function tests() {
 	it( 'should evaluate the inverse complementary error function when provided a plain array', function test() {
 		var data, actual, expected, i;
 
-
 		data = [
 			1.75,
 			1.25,
@@ -129,7 +128,8 @@ describe( 'compute-erfcinv', function tests() {
 			1e-100,
 			5e-324
 		];
-		// Evaluated on Wolfram Alpha
+
+		// Evaluated on Wolfram Alpha:
 		expected = [
 			-0.8134198,
 			-0.2253121,
@@ -213,6 +213,7 @@ describe( 'compute-erfcinv', function tests() {
 			'dtype': 'int8'
 		});
 		assert.notEqual( actual, data );
+		assert.strictEqual( actual.BYTES_PER_ELEMENT, 1 );
 		assert.deepEqual( actual, expected );
 	});
 
@@ -257,7 +258,6 @@ describe( 'compute-erfcinv', function tests() {
 		for ( i = 0; i < actual.length; i++ ) {
 			assert.closeTo( data[ i ], expected[ i ], 1e-3 );
 		}
-
 		function getValue( d ) {
 			return d[ 1 ];
 		}
@@ -293,9 +293,7 @@ describe( 'compute-erfcinv', function tests() {
 			assert.closeTo( data[ i ].x[ 1 ], expected[ i ].x[ 1 ], 1e-3 );
 		}
 
-
 		// Specify a path with a custom separator...
-
 		data = [
 			{'x':[9,1.75]},
 			{'x':[9,1.25]},
@@ -313,7 +311,6 @@ describe( 'compute-erfcinv', function tests() {
 		for ( i = 0; i < actual.length; i++ ) {
 			assert.closeTo( actual[ i ].x[ 1 ], expected[ i ].x[ 1 ], 1e-3 );
 		}
-
 	});
 
 	it( 'should evaluate the inverse complementary error function element-wise when provided a matrix', function test() {

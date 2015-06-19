@@ -24,7 +24,7 @@ describe( 'array erfcinv', function tests() {
 		expect( erfcinv ).to.be.a( 'function' );
 	});
 
-	it( 'should evaluate the complementary error function', function test() {
+	it( 'should evaluate the inverse complementary error function', function test() {
 		var data, actual, expected, i;
 
 		data = [
@@ -63,7 +63,6 @@ describe( 'array erfcinv', function tests() {
 		for ( i = 0; i < actual.length; i++ ) {
 			assert.closeTo( actual[ i ], expected[ i ], 1e-3, 'typed arrays' );
 		}
-
 	});
 
 	it( 'should return null if provided an empty array', function test() {
