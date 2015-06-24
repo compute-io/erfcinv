@@ -9,6 +9,9 @@ var // Expectation library:
 	// Matrix data structure:
 	matrix = require( 'dstructs-matrix' ),
 
+	// Validate a value is NaN:
+	isnan = require( 'validate.io-nan' ),
+
 	// Module to be tested:
 	erfcinv = require( './../lib' ),
 
@@ -28,27 +31,6 @@ describe( 'compute-erfcinv', function tests() {
 
 	it( 'should export a function', function test() {
 		expect( erfcinv ).to.be.a( 'function' );
-	});
-
-	it( 'should throw an error if the first argument is neither a number or array-like or matrix-like', function test() {
-		var values = [
-			// '5', // valid as is array-like (length)
-			true,
-			undefined,
-			null,
-			NaN,
-			function(){},
-			{}
-		];
-
-		for ( var i = 0; i < values.length; i++ ) {
-			expect( badValue( values[i] ) ).to.throw( TypeError );
-		}
-		function badValue( value ) {
-			return function() {
-				erfcinv( value );
-			};
-		}
 	});
 
 	it( 'should throw an error if provided an invalid option', function test() {
@@ -93,6 +75,24 @@ describe( 'compute-erfcinv', function tests() {
 		}
 	});
 
+	it( 'should throw an error if provided a typed-array and an unrecognized/unsupported data type option', function test() {
+		var values = [
+			'beep',
+			'boop'
+		];
+
+		for ( var i = 0; i < values.length; i++ ) {
+			expect( badValue( values[i] ) ).to.throw( Error );
+		}
+		function badValue( value ) {
+			return function() {
+				erfcinv( new Int8Array([1,2,3]), {
+					'dtype': value
+				});
+			};
+		}
+	});
+
 	it( 'should throw an error if provided a matrix and an unrecognized/unsupported data type option', function test() {
 		var values = [
 			'beep',
@@ -111,10 +111,28 @@ describe( 'compute-erfcinv', function tests() {
 		}
 	});
 
+	it( 'should return NaN if the first argument is neither a number, array-like, or matrix-like', function test() {
+		var values = [
+			// '5', // valid as is array-like (length)
+			true,
+			undefined,
+			null,
+			// NaN, // allowed
+			function(){},
+			{}
+		];
+
+		for ( var i = 0; i < values.length; i++ ) {
+			assert.isTrue( isnan( erfcinv( values[ i ] ) ) );
+		}
+	});
+
 	it( 'should compute the inverse complementary error function when provided a number', function test() {
 		assert.strictEqual( erfcinv( 0 ), Infinity );
 		assert.strictEqual( erfcinv( 2 ), -Infinity );
 		assert.strictEqual( erfcinv( 1 ), 0 );
+
+		assert.isTrue( isnan( erfcinv( NaN ) ) );
 	});
 
 	it( 'should evaluate the inverse complementary error function when provided a plain array', function test() {
@@ -361,10 +379,10 @@ describe( 'compute-erfcinv', function tests() {
 		assert.deepEqual( out.data, d2 );
 	});
 
-	it( 'should return `null` if provided an empty data structure', function test() {
-		assert.isNull( erfcinv( [] ) );
-		assert.isNull( erfcinv( matrix( [0,0] ) ) );
-		assert.isNull( erfcinv( new Int8Array() ) );
+	it( 'should return an empty data structure if provided an empty data structure', function test() {
+		assert.deepEqual( erfcinv( [] ), [] );
+		assert.deepEqual( erfcinv( matrix( [0,0] ) ).data, new Float64Array() );
+		assert.deepEqual( erfcinv( new Int8Array() ), new Float64Array() );
 	});
 
 });
