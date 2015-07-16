@@ -15,7 +15,7 @@ var // Expectation library:
 	// Module to be tested:
 	erfcinv = require( './../lib' ),
 
-	// Error function:
+	// Inverse complementary error function:
 	ERFCINV = require( './../lib/number.js' );
 
 

@@ -251,7 +251,7 @@ bool = ( mat === out );
 	});
 	// returns Int8Array( [0,0,0] );
 	```
-	
+
 
 ## Examples
 
@@ -268,7 +268,7 @@ var data,
 // Plain arrays...
 data = new Array( 100 );
 for ( i = 0; i < data.length; i++ ) {
-	data[ i ] = Math.random()*2;
+	data[ i ] = Math.random() * 2;
 }
 out = erfcinv( data );
 

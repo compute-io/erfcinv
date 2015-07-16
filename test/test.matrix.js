@@ -12,7 +12,7 @@ var // Expectation library:
 	// Module to be tested:
 	erfcinv = require( './../lib/matrix.js' ),
 
-	// Error function:
+	// Inverse complementary error function:
 	ERFCINV = require( './../lib/number.js' );
 
 
