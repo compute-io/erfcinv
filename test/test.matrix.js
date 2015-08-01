@@ -12,7 +12,7 @@ var // Expectation library:
 	// Module to be tested:
 	erfcinv = require( './../lib/matrix.js' ),
 
-	// Error function:
+	// Inverse complementary error function:
 	ERFCINV = require( './../lib/number.js' );
 
 
@@ -55,7 +55,7 @@ describe( 'matrix erfcinv', function tests() {
 		}
 	});
 
-	it( 'should evaluate the error function for each matrix element', function test() {
+	it( 'should evaluate the inverse complementary error function for each matrix element', function test() {
 		var actual;
 
 		actual = matrix( [5,5], 'float64' );
@@ -64,19 +64,20 @@ describe( 'matrix erfcinv', function tests() {
 		assert.deepEqual( actual.data, out.data );
 	});
 
-	it( 'should return null if provided an empty matrix', function test() {
-		var out, mat;
+	it( 'should return an empty matrix if provided an empty matrix', function test() {
+		var out, mat, expected;
 
 		out = matrix( [0,0] );
+		expected = matrix( [0,0] ).data;
 
 		mat = matrix( [0,10] );
-		assert.isNull( erfcinv( out, mat ) );
+		assert.deepEqual( erfcinv( out, mat ).data, expected );
 
 		mat = matrix( [10,0] );
-		assert.isNull( erfcinv( out, mat ) );
+		assert.deepEqual( erfcinv( out, mat ).data, expected );
 
 		mat = matrix( [0,0] );
-		assert.isNull( erfcinv( out, mat ) );
+		assert.deepEqual( erfcinv( out, mat ).data, expected );
 	});
 
 });

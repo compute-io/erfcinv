@@ -7,7 +7,7 @@ var // Expectation library:
 	chai = require( 'chai' ),
 
 	// Module to be tested:
-	erfcinv = require( './../lib/array.js' );
+	erfcinv = require( './../lib/typedarray.js' );
 
 
 // VARIABLES //
@@ -18,7 +18,7 @@ var expect = chai.expect,
 
 // TESTS //
 
-describe( 'array erfcinv', function tests() {
+describe( 'typed-array erfcinv', function tests() {
 
 	it( 'should export a function', function test() {
 		expect( erfcinv ).to.be.a( 'function' );
@@ -27,27 +27,27 @@ describe( 'array erfcinv', function tests() {
 	it( 'should evaluate the inverse complementary error function', function test() {
 		var data, actual, expected, i;
 
-		data = [
+		data = new Float64Array([
 			1.75,
 			1.25,
 			1.01,
 			1e-5,
 			1e-100,
 			5e-324
-		];
+		]);
+		actual = new Float64Array( data.length );
+
+		actual = erfcinv( actual, data );
 
 		// Evaluated on Wolfram Alpha and Octave:
-		expected = [
+		expected = new Float64Array([
 			-0.8134198,
 			-0.2253121,
 			-0.00886250,
 			3.12341327,
 			15.0655747,
 			27.2130740
-		];
-		actual = new Array( data.length );
-
-		actual = erfcinv( actual, data );
+		]);
 
 		for ( i = 0; i < actual.length; i++ ) {
 			assert.closeTo( actual[ i ], expected[ i ], 1e-3 );
@@ -55,19 +55,7 @@ describe( 'array erfcinv', function tests() {
 	});
 
 	it( 'should return an empty array if provided an empty array', function test() {
-		assert.deepEqual( erfcinv( [], [] ), [] );
-	});
-
-	it( 'should handle non-numeric values by setting the element to NaN', function test() {
-		var data, actual, expected;
-
-		data = [ true, null, [], {} ];
-		actual = new Array( data.length );
-		actual = erfcinv( actual, data );
-
-		expected = [ NaN, NaN, NaN, NaN ];
-
-		assert.deepEqual( actual, expected );
+		assert.deepEqual( erfcinv( new Int8Array(), new Int8Array() ), new Int8Array() );
 	});
 
 });

@@ -31,7 +31,7 @@ var erfcinv = require( 'compute-erfcinv' );
 
 #### erfcinv( x[, options] )
 
-Evaluates the [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function). `x` may be either a [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), an [`array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays), or a [`matrix`](https://github.com/dstructs/matrix). All values __must__ reside on the interval `[0,2]`.
+Evaluates the [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function). `x` may be either a [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), an [`array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), a [`typed array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays), or a [`matrix`](https://github.com/dstructs/matrix). All numeric values __must__ reside on the interval `[0,2]`.
 
 ``` javascript
 var matrix = require( 'dstructs-matrix' ),
@@ -60,14 +60,14 @@ for ( i = 0; i < 4; i++ ) {
 }
 mat = matrix( data, [2,2], 'float64' );
 /*
-	[  0  0.5
-	   1  1.5 ]
+	[ 0  0.5
+	  1  1.5 ]
 */
 
 out = erfcinv( mat );
 /*
-	[  +infinity  0.477
-	   0         -0.477 ]
+	[ +infinity  0.477
+	  0         -0.477 ]
 */
 ```
 
@@ -179,21 +179,79 @@ for ( i = 0; i < 4; i++ ) {
 }
 mat = matrix( data, [2,2], 'float64' );
 /*
-	[  0  0.5
-	   1  1.5 ]
+	[ 0  0.5
+	  1  1.5 ]
 */
 
 out = erfcinv( mat, {
 	'copy': false
 });
 /*
-	[  +infinity  0.477
-	   0         -0.477 ]
+	[ +infinity  0.477
+	  0         -0.477 ]
 */
 
 bool = ( mat === out );
 // returns true
 ```
+
+
+## Notes
+
+*	If an element is __not__ a numeric value, the evaluated [inverse complementary error function](https://en.wikipedia.org/wiki/Error_function#Inverse_function) is `NaN`.
+
+	``` javascript
+	var data, out;
+
+	out = erfcinv( null );
+	// returns NaN
+
+	out = erfcinv( true );
+	// returns NaN
+
+	out = erfcinv( {'a':'b'} );
+	// returns NaN
+
+	out = erfcinv( [ true, null, [] ] );
+	// returns [ NaN, NaN, NaN ]
+
+	function getValue( d, i ) {
+		return d.x;
+	}
+	data = [
+		{'x':true},
+		{'x':[]},
+		{'x':{}},
+		{'x':null}
+	];
+
+	out = erfcinv( data, {
+		'accessor': getValue
+	});
+	// returns [ NaN, NaN, NaN, NaN ]
+
+	out = erfcinv( data, {
+		'path': 'x'
+	});
+	/*
+		[
+			{'x':NaN},
+			{'x':NaN},
+			{'x':NaN,
+			{'x':NaN}
+		]
+	*/
+	```
+
+*	Be careful when providing a data structure which contains non-numeric elements and specifying an `integer` output data type, as `NaN` values are cast to `0`.
+
+	``` javascript
+	var out = erfcinv( [ true, null, [] ], {
+		'dtype': 'int8'
+	});
+	// returns Int8Array( [0,0,0] );
+	```
+
 
 ## Examples
 
@@ -210,7 +268,7 @@ var data,
 // Plain arrays...
 data = new Array( 100 );
 for ( i = 0; i < data.length; i++ ) {
-	data[ i ] = Math.random()*2;
+	data[ i ] = Math.random() * 2;
 }
 out = erfcinv( data );
 

@@ -73,13 +73,34 @@ describe( 'deepset erfcinv', function tests() {
 		];
 
 		for ( i = 0; i < data.length; i++ ) {
-			assert.closeTo( data[ i ].x[ 1 ], expected[ i ].x[ 1 ], 1e-3, 'custom separator' );
+			assert.closeTo( data[ i ].x[ 1 ], expected[ i ].x[ 1 ], 1e-3, 'custom separator ' + i );
 		}
 	});
 
-	it( 'should return null if provided an empty array', function test() {
-		assert.isNull( erfcinv( [], 'x' ) );
-		assert.isNull( erfcinv( [], 'x', '/' ) );
+	it( 'should return an empty array if provided an empty array', function test() {
+		assert.deepEqual( erfcinv( [], 'x' ), [] );
+		assert.deepEqual( erfcinv( [], 'x', '/' ), [] );
+	});
+
+	it( 'should handle non-numeric values by setting the element to NaN', function test() {
+		var data, actual, expected;
+
+		data = [
+			{'x':true},
+			{'x':null},
+			{'x':[]},
+			{'x':{}}
+		];
+		actual = erfcinv( data, 'x' );
+
+		expected = [
+			{'x':NaN},
+			{'x':NaN},
+			{'x':NaN},
+			{'x':NaN}
+		];
+
+		assert.deepEqual( data, expected );
 	});
 
 });
